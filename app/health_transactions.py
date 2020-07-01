@@ -25,4 +25,16 @@ def acknowledge_health():
 @HEALTH_API.route('/check_acknowledgement', methods=["POST"])
 def check_acknowledgement():
     data = flask.request.get_json()
-    return data
+    login_id = data['login_id']
+    _, cursor = utils.get_database_connection()
+    timestamp = utils.get_utc_timestamp_now()
+
+    query = (
+        "SELECT COUNT(*) FROM health_history"
+        f"WHERE created_at::date = date {timestamp[:-9]} and login_id = {login_id}"
+    )
+    cursor.execute(query)
+    count = cursor.fetchone()[0]
+    if count:
+        return utils.make_response("{error: None, data: 'true'}", 200)
+    return utils.make_response("{error: None, data: 'true'}", 200)

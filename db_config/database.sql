@@ -5,7 +5,7 @@ CREATE TABLE address_dir
   street_number varchar(30),
   street_name varchar(250),
   additional_info varchar(250),
-  city varchar(50,)
+  city varchar(50),
   province varchar(50),
   postal_code varchar(10),
   login_id bigint NOT NULL,
