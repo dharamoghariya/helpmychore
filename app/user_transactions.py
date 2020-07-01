@@ -4,16 +4,16 @@ import os
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 
-auth = flask.Blueprint(f"API_{os.environ.get('VERSION')}_USER_OPS", __name__)
+AUTH = flask.Blueprint(f"API_{os.environ.get('VERSION')}_USER_OPS", __name__)
 
 
-@auth.route("/login", methods=["POST"])
+@AUTH.route("/login", methods=["POST"])
 def login():
     data = flask.request.get_json()
     return data
 
 
-@auth.route("/signup_user", methods=["POST"])
+@AUTH.route("/signup_user", methods=["POST"])
 def signup():
     data = flask.request.get_json()
     conn, cursor = utils.get_database_connection()
