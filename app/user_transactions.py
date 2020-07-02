@@ -15,13 +15,44 @@ def login():
 
 @AUTH.route("/signup_user", methods=["POST"])
 def signup():
+    """
+    Sign up the user.
+
+    Request: application/json
+        username str
+            Username of the user signing up. It has to be unique.
+        password str
+            Password of the user
+        unitNo int
+            Unit number of the user's address
+        streetNo int
+            Street number of the user's address
+        streetName str
+            Street name of the user's address
+        additional str
+            Additional infomration about user's address
+        city str
+            City of the user's address
+        postalCode str
+            Postal code of the user's address
+        name str
+            Name of the user
+        email str
+            Email of the user
+        phone str
+            Phone number of the user
+        age int
+            Age of the user
+        medicalCondition boolean
+            If the user has any medical condition.
+    """
     data = flask.request.get_json()
     conn, cursor = utils.get_database_connection()
     timestamp = utils.get_utc_timestamp_now()
 
     is_active = "true"
 
-    password = generate_password_hash(data['password'])
+    password = generate_password_hash(data["password"])
 
     try:
         login_query = (
