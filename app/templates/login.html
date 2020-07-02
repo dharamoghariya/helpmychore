@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="colorlib.com" name="author">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Sign Up Form</title>
+
+    <!-- Font Icon -->
+    <link href="/static/fonts/material-icon/css/material-design-iconic-font.min.css" rel="stylesheet">
+
+    <!-- Main css -->
+    <link href="/static/css/signup-style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="main" style="padding: 200px 0;">
+ <div class="form-check" style="margin-bottom:20px;">
+        <a href="index"><span><span></span></span>HOME</a>
+    </div>
+    <div class="container">
+        <form class="login-form" id="login-form" method="POST">
+
+
+            <h2>
+                Login Information
+            </h2>
+            <fieldset>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Your password</label>
+                        <input id="password" name="password" type="password"/>
+                    </div>
+                </div>
+
+                <div class="actions clearfix">
+                    <ul>
+                        <li></li>
+                        <li><a href="#next" role="menuitem">Login</a></li>
+                    </ul>
+                </div>
+
+
+            </fieldset>
+        </form>
+
+    </div>
+    <div class="form-check">
+        <a href="signup"><span><span></span></span>Need to Sign Up?</a>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="/static/js/vendor/jquery/jquery.min.js"></script>
+<script src="/static/js/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/static/js/vendor/jquery-validation/dist/additional-methods.min.js"></script>
+<script src="/static/js/vendor/jquery-steps/jquery.steps.min.js"></script>
+<script src="/static/js/signup-main.js"></script>
+</body>
+</html>

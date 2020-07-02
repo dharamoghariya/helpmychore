@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="colorlib.com" name="author">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Sign Up Form</title>
+
+    <!-- Font Icon -->
+    <link href="/static/fonts/material-icon/css/material-design-iconic-font.min.css" rel="stylesheet">
+
+    <!-- Main css -->
+    <link href="/static/css/signup-style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="main">
+    <div class="form-check" style="margin-bottom:20px;">
+        <a href="index"><span><span></span></span>HOME</a>
+    </div>
+
+    <div class="container">
+        <form class="signup-form" enctype="multipart/form-data" id="signup-form" method="POST">
+            <h3>
+                Personal Info
+            </h3>
+            <fieldset>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input id="name" required name="name" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input id="email" required name="email" type="email"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input id="age" required name="age" type="number"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Contact No.</label>
+                        <input id="phone" required name="phone" type="text" placeholder="444-444-4444"/>
+                    </div>
+                </div>
+
+            </fieldset>
+
+
+            <h3>
+                Address Info
+            </h3>
+            <fieldset>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="unitNo">Unit No.</label>
+                        <input id="unitNo" name="unitNo" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="streetNo">Street No.</label>
+                        <input id="streetNo" name="streetNo" type="text"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="streetName">Street Name</label>
+                        <input id="streetName" name="streetName" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input id="city" name="city" type="text"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postalCode">Postal Code</label>
+                        <input id="postalCode" name="postalCode" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Province</label>
+                        <input id="province" name="province" type="text"/>
+                    </div>
+                </div>
+
+
+            </fieldset>
+
+
+            <h3>
+                Login Info
+            </h3>
+            <fieldset>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Your password</label>
+                        <input id="password" name="password" type="password"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-select">
+                        <label for="signUpAs">SignUp as</label>
+                        <div class="select-group">
+                            <select id="signUpAs" name="signUpAs">
+                                <option value=""></option>
+                                <option value="volunteer">Volunteer</option>
+                                <option value="requestor">Requestor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-select">
+                        <label for="signUpAs">Do you have Medical Condition?</label>
+                        <div class="select-group">
+                            <select id="medicalCondition" name="medicalCondition">
+                                <option value=""></option>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+            </fieldset>
+        </form>
+
+    </div>
+    <div class="form-check">
+        <a href="login"><span><span></span></span>Already Signed Up?</a>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="/static/js/vendor/jquery/jquery.min.js"></script>
+<script src="/static/js/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/static/js/vendor/jquery-validation/dist/additional-methods.min.js"></script>
+<script src="/static/js/vendor/jquery-steps/jquery.steps.min.js"></script>
+<script src="/static/js/signup-main.js"></script>
+</body>
+</html>
