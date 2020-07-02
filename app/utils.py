@@ -7,12 +7,14 @@ global cursor
 database_conn = None
 cursor = None
 
+
 def make_response(status, msg):
     return flask.jsonify(msg), status
 
 
 def get_utc_timestamp_now():
-    return datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
 
 def get_database_connection():
     global database_conn
