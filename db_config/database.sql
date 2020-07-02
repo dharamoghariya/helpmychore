@@ -36,7 +36,7 @@ CREATE TABLE login_details
 (
   login_id bigserial NOT NULL,
   username varchar(25) UNIQUE,
-  password bytea(32),
+  password varchar(max),
   is_active boolean,
   created_at timestamp,
   updated_at timestamp

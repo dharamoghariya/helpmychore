@@ -134,6 +134,9 @@ a:focus, a:active {
   -o-transition: all 300ms ease 0s;
   -ms-transition: all 300ms ease 0s; }
 
+a:hover{
+cursor:pointer;
+}
 input, select, textarea {
   outline: none;
   appearance: unset !important;
