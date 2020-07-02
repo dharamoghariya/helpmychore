@@ -113,7 +113,7 @@ $('#login_user').click(function(e){
             dataType: "json",
             contentType: "application/json"
         }).done(function (data){
-            if(data == 200){
+            if(data != ''){
             window.location.replace("requests");
             }
         })
