@@ -1,16 +1,92 @@
 from app import utils
+from app import login_manager
 import flask
+import flask_login
 import os
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 
 AUTH = flask.Blueprint(f"API_{os.environ.get('VERSION')}_USER_OPS", __name__)
 
+class User:
+    pass
+
+@login_manager.user_loader
+def user_loader(username):
+    """
+    Userloader function for flask_login
+
+    Arugments:
+        username str
+            Username of the user
+    """
+    user = User()
+    user.id = username
+    return user
+
+
+@login_manager.request_loader
+def request_loader(request):
+    """
+    Request loader function to help flask_login
+
+    request: application/json
+        username str
+            Username of the string
+        password str
+            Password of the user
+    """
+    data = request.get_json()
+    username = data['username']
+
+    _, cursor = utils.get_database_connection()
+    query = (
+        f"SELECT username, password FROM login_details WHERE username={data['username']}"
+    )
+    cursor.execute(query)
+    username, password = cursor.fetchone()
+
+    user = User()
+    user.id = username
+    user.is_authenticated = (generate_password_hash(data['password']) == password)
+    return user
+
 
 @AUTH.route("/login", methods=["POST"])
 def login():
+    """
+    Login the user
+
+    Request: application/json
+        username str
+            Username of the user
+        password str
+            Password of the user
+    """
     data = flask.request.get_json()
-    return data
+
+    _, cursor = utils.get_database_connection()
+    query = (
+        f"SELECT username, password FROM login_details WHERE username={data['username']}"
+    )
+    cursor.execute(query)
+    username, password = cursor.fetchone()
+    if username == None:
+        return utils.make_response("{error: User does not exist}", 404)
+
+    if generate_password_hash(data['password']) == password:
+        user = User()
+        user.id = username
+        flask_login.login_user(user)
+    return utils.make_response("{error: None}", 200)
+
+
+@AUTH.route('/logout')
+def logout():
+    """
+    Logout the user.
+    """
+    flask_login.logout_user()
 
 
 @AUTH.route("/signup_user", methods=["POST"])
