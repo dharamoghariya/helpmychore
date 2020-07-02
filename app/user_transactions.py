@@ -52,7 +52,7 @@ def request_loader(request):
     return user
 
 
-@AUTH.route("/login", methods=["POST"])
+@AUTH.route("/login_user", methods=["POST"])
 def login():
     """
     Login the user
@@ -87,6 +87,7 @@ def logout():
     Logout the user.
     """
     flask_login.logout_user()
+
 
 
 @AUTH.route("/signup_user", methods=["POST"])
