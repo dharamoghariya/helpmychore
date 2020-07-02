@@ -22,6 +22,7 @@ def signup():
     is_active = "true"
 
     password = generate_password_hash(data['password'])
+
     try:
         login_query = (
             "INSERT INTO login_details (username, password, is_active, created_at, updated_at)"
@@ -30,6 +31,7 @@ def signup():
         )
         cursor.execute(login_query)
         login_id = cursor.fetchone()[0]
+
     except psycopg2.IntegrityError:
         message = f"{{error: Username {data['username']} is taken}}"
         return utils.make_response(message, 409)
@@ -41,26 +43,29 @@ def signup():
         f"'{data['streetName']}', '{data.get('additional', 'NULL')}', '{data['city']}', "
         f"'{data['province']}', '{data['postalCode']}', {login_id}, '{timestamp}', '{timestamp}')"
     )
+
     cursor.execute(address_query)
 
-    if data["type"] == "volunteer":
+    if data["category"] == "Volunteer":
         query = (
             "INSERT INTO volunteer_details (volunteer_name, volunteer_email, volunteer_phone,"
             f"volunteer_age, login_id, created_at, updated_at) VALUES ('{data['name']}',"
-            f"'{data['email']}', {data['phone']}, {data['age']}, {login_id}, {is_active}, "
+            f"'{data['email']}', {data['phone']}, {data['age']}, {login_id}, "
             f"'{timestamp}', '{timestamp}')"
         )
+
         try:
             cursor.execute(query)
         except psycopg2.IntegrityError:
             message = f"{{error: Email {data['email']} is already in the system}}"
             return utils.make_response(message, 409)
     else:
+        medical_condition = True if data['medicalCondition'] == "Yes" else False
         query = (
             "INSERT INTO requester_details (requester_name, requester_email, requester_phone, age,"
             f"has_medical_condition, login_id, created_at, updated_at) VALUES ({data['name']}, "
-            f"{data['email']}, {data['phone']}, {data['id']}, {data['medicalCondition']}, "
-            f"{login_id}, {is_active}, '{timestamp}', '{timestamp}')"
+            f"{data['email']}, {data['phone']}, {data['id']}, {medical_condition}, "
+            f"{login_id}, '{timestamp}', '{timestamp}')"
         )
         try:
             cursor.execute(query)
