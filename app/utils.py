@@ -17,6 +17,7 @@ def get_utc_timestamp_now():
 def get_database_connection():
     global database_conn
     if database_conn is None:
-        database_conn, cursor = db_object.get_db_connection()
+        database_conn = db_object.get_db_connection()
+        return database_conn, database_conn.cursor()
     else:
-        return database_conn, cursor
+        return database_conn, database_conn.cursor()

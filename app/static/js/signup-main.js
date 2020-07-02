@@ -29,12 +29,12 @@
         $(this).closest("#signUpAs").children('li:not(.init)').toggle();
     });
     
-    var allOptions = $("#signUpAs").children('li:not(.init)');
+    var allOptionsCat = $("#signUpAs").children('li:not(.init)');
     $("#signUpAs").on("click", "li:not(.init)", function() {
-        allOptions.removeClass('selected');
+        allOptionsCat.removeClass('selected');
         $(this).addClass('selected');
         $("#signUpAs").children('.init').html($(this).html());
-        allOptions.toggle();
+        allOptionsCat.toggle();
     });
 
 
@@ -49,21 +49,44 @@
         $(this).closest("#medicalCondition").children('li:not(.init)').toggle();
     });
 
-    var allOptions = $("#medicalCondition").children('li:not(.init)');
+    var allOptionsCond = $("#medicalCondition").children('li:not(.init)');
     $("#medicalCondition").on("click", "li:not(.init)", function() {
-        allOptions.removeClass('selected');
+        allOptionsCond.removeClass('selected');
         $(this).addClass('selected');
         $("#medicalCondition").children('.init').html($(this).html());
-        allOptions.toggle();
+        allOptionsCond.toggle();
     });
     
 })(jQuery);
 
 function signup_user(){
+category = $("#signUpAs").children('.init').text();
+medicalCondition = $("#medicalCondition").children('.init').text();
 
+if(category == "" || medicalCondition == ""){
+    alert("Please fill up all the fields to continue");
+    return false;
+}
+if(category == "Volunteer" && medicalCondition == "Yes"){
+    alert("Sorry we cannot let you volunteer with medical conditions");
+    return false;
+}
 json_data = {
+"name":$("#name").val(),
 "email":$("#email").val(),
-"name":$("#name").val()
+"age":$("#age").val(),
+"phone":$("#phone").val(),
+"unitNo":$("#unitNo").val(),
+"streetNo":$("#streetNo").val(),
+"streetName":$("#streetName").val(),
+"city":$("#city").val(),
+"postalCode":$("#postalCode").val(),
+"province":$("#province").val(),
+"username":$("#username").val(),
+"password":$("#password").val(),
+"category":category,
+"medicalCondition":medicalCondition,
+"password":$("#password").val()
 }
 $.ajax({
     url:"/signup_user",
@@ -72,8 +95,6 @@ $.ajax({
     dataType: "json",
     contentType: "application/json"
     }).done(function (data){
-        if(data=="success"){
-            alert("registered successfully");
-        }
+    window.location.replace("login");
     })
 }
