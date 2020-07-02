@@ -114,7 +114,7 @@ $('#login_user').click(function(e){
             contentType: "application/json"
         }).done(function (data){
             if(data == 200){
-            window.location.replace("errands");
+            window.location.replace("requests");
             }
         })
 });

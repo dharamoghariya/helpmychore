@@ -8,7 +8,9 @@ def config(app):
     load_dotenv()
     app.config["DEBUG"] = False
     app.config["TESTING"] = False
-    app.config["secret_key"] = 'u055scvqlehhy39ysioieyd8tq868e3kwadkr1ugkro16izchioqg867vn94n682'
+    app.config[
+        "secret_key"
+    ] = "u055scvqlehhy39ysioieyd8tq868e3kwadkr1ugkro16izchioqg867vn94n682"
 
 
 app = Flask(__name__)

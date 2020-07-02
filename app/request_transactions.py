@@ -5,7 +5,7 @@ import os
 REQUEST_API = flask.Blueprint(f"API_{os.environ.get('VERSION')}_REQUEST_OPS", __name__)
 
 
-@REQUEST_API.route("/submit_requests", methods=["POST"])
+@REQUEST_API.route("/submit_request", methods=["POST"])
 def submit_request():
     """
     Submit requests to get help.
@@ -29,34 +29,35 @@ def submit_request():
     conn, cursor = utils.get_database_connection()
 
     timestamp = utils.get_utc_timestamp_now()
-    transaction_query = (
-        "INSERT INTO token_transactions (volunteer_id, requester_id, request_id, tokens, "
-        f"is_complete, created_at, updated_at) VALUES ({data.get('volunteer_id', None)}, "
-        f"{data.get('requester_id', None)}, {data.get('request_id', None)}, {data['tokens']}, "
-        f"'{data.get('is_complete', 'false')}', '{timestamp}', '{timestamp}') "
-        "RETURNING transaction_id"
-    )
-    transaction_id = None
-    cursor.execute(transaction_query)
-    transaction_id = cursor.fetchone()[0]
-
+    requester_id = 2
     request_query = (
         "INSERT INTO request_details (request_date, request_type, request_information, "
-        "request_note, requester_id, volunteer_id, transaction_id, is_cancelled, is_commenced, "
+        "request_note, requester_id, volunteer_id, is_cancelled, is_commenced, "
         f"is_completed, created_at, updated_at) VALUES ('{timestamp}', '{data['request_type']}', "
         f"'{data['request_information']}', '{data.get('request_note', 'NULL')}', "
-        f"'{data['request_id']}', '{data.get('volunteer_id', 'NULL')}', {transaction_id}, "
+        f"'{requester_id}', {data.get('volunteer_id', 'NULL')}, "
         f"'{data.get('is_cancelled', 'false')}', '{data.get('is_commenced', 'false')}', "
         f"'{data.get('is_completed', 'false')}', '{timestamp}', '{timestamp}') RETURNING request_id"
     )
     cursor.execute(request_query)
-    request_id = cursor.fetchone()[0]
+    # request_id = cursor.fetchone()[0]
 
-    transaction_table_update = (
-        "UPDATE token_transactions"
-        f"SET request_id={request_id} WHERE transaction_id={transaction_id}"
-    )
-    cursor.execute(transaction_table_update)
+    # transaction_query = (
+    #     "INSERT INTO token_transactions (volunteer_id, requester_id, request_id, tokens, "
+    #     f"is_complete, created_at, updated_at) VALUES ({data.get('volunteer_id', None)}, "
+    #     f"{data.get('requester_id', None)}, {data.get('request_id', None)}, {data['tokens']}, "
+    #     f"'{data.get('is_complete', 'false')}', '{timestamp}', '{timestamp}') "
+    #     "RETURNING transaction_id"
+    # )
+    # transaction_id = None
+    # cursor.execute(transaction_query)
+    # transaction_id = cursor.fetchone()[0]
+    #
+    # transaction_table_update = (
+    #     "UPDATE token_transactions"
+    #     f"SET request_id={request_id} WHERE transaction_id={transaction_id}"
+    # )
+    # cursor.execute(transaction_table_update)
     conn.commit()
     return utils.make_response("{error: None}", 200)
 
@@ -72,31 +73,37 @@ def get_requests():
         volunteer_id int
             Volunteer ID for whom the matching requests are to be found.
     """
-    data = flask.request.get_json()
+    volunteer_id = 3
     _, cursor = utils.get_database_connection()
 
     volunteer_postal_query = (
-        "SELECT b.postal_code FROM volunteer_details as a "
-        "INNER JOIN address_dir b ON a.login_id = b.login_id "
-        f"WHERE a.volunteer_id = '{data['volunteer_id']}'"
+        "SELECT b.postal_code FROM address_dir AS b INNER JOIN volunteer_details AS a ON a.login_id = b.login_id "
+        f"WHERE a.volunteer_id = {volunteer_id}"
     )
     cursor.execute(volunteer_postal_query)
     postal_code = cursor.fetchone()[0][:3]
 
     request_queries = (
-        "SELECT a.request_id ,a.request_type, a.request_date, b.unit_no, b.street_number, "
-        "b.street_name, b.city, b.postal_code, e.token FROM request_details as a"
-        "INNER JOIN ("
-        "SELECT c.requester_id, d.unit_no, d.street_number, d.street_name, d.city, "
-        "d.postal_code FROM requester_details as c INNER JOIN address_dir as d "
-        "ON c.login_id = d.login_id"
-        ") as b ON a.requester_id = b.requester_id "
-        "INNER JOIN token_transactions c ON a.transaction_id = c.transaction_id "
-        f"WHERE LEFT(b.postal_code, 3) = {postal_code}"
+        f"""SELECT a.request_id ,a.request_type, TO_CHAR(CAST(a.request_date as date), 'YYYY-MM-DD') as request_date,
+            b.unit_no, b.street_number, 
+            b.street_name, b.city, b.postal_code, e.tokens FROM request_details as a
+            INNER JOIN (
+            SELECT c.requester_id, d.unit_no, d.street_number, d.street_name, d.city, 
+            d.postal_code FROM requester_details as c INNER JOIN address_dir as d 
+            ON c.login_id = d.login_id
+            ) as b ON a.requester_id = b.requester_id 
+            LEFT JOIN token_transactions e ON a.transaction_id = e.transaction_id 
+            WHERE LEFT(b.postal_code, 3) = '{postal_code}'"""
     )
     cursor.execute(request_queries)
+    columns = [column[0] for column in cursor.description]
     requests_list = cursor.fetchall()
-    return utils.make_response(requests_list, 200)
+    results = []
+    for row in requests_list:
+        results.append(dict(zip(columns, row)))
+
+    print(results)
+    return utils.make_response(results, 200)
 
 
 @REQUEST_API.route("/get_request_content", methods=["POST"])
@@ -119,7 +126,7 @@ def get_request_content():
     return utils.make_response(request_data, 200)
 
 
-@REQUEST_API.route('/fetch_all_requests')
+@REQUEST_API.route("/fetch_all_requests")
 def fetch_all_requests():
     """
     Fetch all requests submitted by a requester.
@@ -139,7 +146,7 @@ def fetch_all_requests():
     return utils.make_response(request_data, 200)
 
 
-@REQUEST_API.route('/fetch_active_requests_requester')
+@REQUEST_API.route("/fetch_active_requests_requester")
 def fetch_active_requests_requester():
     """
     Fetch all active requests of the requester.
@@ -160,7 +167,7 @@ def fetch_active_requests_requester():
     return utils.make_response(request_data, 200)
 
 
-@REQUEST_API.route('/fetch_volunteer_requests')
+@REQUEST_API.route("/fetch_volunteer_requests")
 def fetch_volunteer_requests():
     """
     Fetch all requests taken or completed by a volunteer.
@@ -180,7 +187,7 @@ def fetch_volunteer_requests():
     return utils.make_response(request_data, 200)
 
 
-@REQUEST_API.route('/fetch_active_volunteer_request')
+@REQUEST_API.route("/fetch_active_volunteer_request")
 def fetch_active_volunteer_request():
     """
     Fetch all active requests of the voluteer.

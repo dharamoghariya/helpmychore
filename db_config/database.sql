@@ -54,7 +54,6 @@ CREATE TABLE request_details
   request_note text,
   requester_id bigint,
   volunteer_id bigint,
-  transaction_id bigint,
   is_cancelled boolean,
   is_commenced boolean,
   is_completed boolean,
