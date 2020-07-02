@@ -2697,8 +2697,9 @@ pre code
 
     transition: all .15s cubic-bezier(.68, -.55, .265, 1.55); 
 
-    color: #8898aa;
-    border: 1px solid #dee2e6;
+    color: #5603ad;
+    font-weight:bold;
+    border: 2px solid #0b3f73;
     border-radius: .25rem;
     background-color: #fff;
     background-clip: padding-box;
@@ -29837,4 +29838,9 @@ input.datetimepicker[data-color='yellow'] + .bootstrap-datetimepicker-widget.dro
 .bootstrap-datetimepicker-widget.dropdown-black table td .btn[data-action='togglePeriod']
 {
     background: transparent;
+}
+
+.hide
+{
+display:none;
 }
