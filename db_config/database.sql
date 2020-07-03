@@ -36,7 +36,7 @@ CREATE TABLE login_details
 (
   login_id bigserial NOT NULL,
   username varchar(25) UNIQUE,
-  password bytea(32),
+  password varchar(256),
   is_active boolean,
   created_at timestamp,
   updated_at timestamp
@@ -54,7 +54,6 @@ CREATE TABLE request_details
   request_note text,
   requester_id bigint,
   volunteer_id bigint,
-  transaction_id bigint,
   is_cancelled boolean,
   is_commenced boolean,
   is_completed boolean,
@@ -122,8 +121,8 @@ ALTER TABLE health_history ADD CONSTRAINT fk_health_history_
 ALTER TABLE request_details ADD CONSTRAINT fk_request_details_requester_id
   FOREIGN KEY (requester_id) REFERENCES requester_details (requester_id) ON DELETE NO ACTION ON UPDATE CASCADE;
 
-ALTER TABLE request_details ADD CONSTRAINT fk_request_details_transaction_id
-  FOREIGN KEY (transaction_id) REFERENCES token_transactions (transaction_id) ON DELETE NO ACTION ON UPDATE CASCADE;
+-- ALTER TABLE request_details ADD CONSTRAINT fk_request_details_transaction_id
+--   FOREIGN KEY (transaction_id) REFERENCES token_transactions (transaction_id) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE request_details ADD CONSTRAINT fk_request_details_volunteer_id
   FOREIGN KEY (volunteer_id) REFERENCES volunteer_details (volunteer_id) ON DELETE NO ACTION ON UPDATE CASCADE;

@@ -2,15 +2,45 @@ from flask import Blueprint, render_template, abort
 from jinja2 import TemplateNotFound
 
 main_page = Blueprint(
-    "index_page", __name__, template_folder="templates", static_folder="static"
+    "pages", __name__, template_folder="templates", static_folder="static"
 )
 
 
-@main_page.route("/", defaults={"page": "index"})
-@main_page.route("/<page>")
-def show(page):
+@main_page.route("/")
+def main():
     try:
-        # return "MAIN PAGE TEST"
-        return render_template("%s.html" % page)
+        return render_template("index.html")
+    except TemplateNotFound:
+        abort(404)
+
+
+@main_page.route("/signup")
+def signup_page():
+    try:
+        return render_template("signup.html")
+    except TemplateNotFound:
+        abort(404)
+
+
+@main_page.route("/login")
+def login_page():
+    try:
+        return render_template("login.html")
+    except TemplateNotFound:
+        abort(404)
+
+
+@main_page.route("/requests")
+def requests_page():
+    try:
+        return render_template("requests.html")
+    except TemplateNotFound:
+        abort(404)
+
+
+@main_page.route("/request-volunteer")
+def request_volunteer_page():
+    try:
+        return render_template("create_request.html")
     except TemplateNotFound:
         abort(404)

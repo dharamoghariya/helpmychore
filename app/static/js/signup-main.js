@@ -60,41 +60,61 @@
 })(jQuery);
 
 function signup_user(){
-category = $("#signUpAs").children('.init').text();
-medicalCondition = $("#medicalCondition").children('.init').text();
+    category = $("#signUpAs").children('.init').text();
+    medicalCondition = $("#medicalCondition").children('.init').text();
 
-if(category == "" || medicalCondition == ""){
-    alert("Please fill up all the fields to continue");
-    return false;
+    if(category == "" || medicalCondition == ""){
+        alert("Please fill up all the fields to continue");
+        return false;
+    }
+    if(category == "Volunteer" && medicalCondition == "Yes"){
+        alert("Sorry we cannot let you volunteer with medical conditions");
+        return false;
+    }
+    json_data = {
+        "name":$("#name").val(),
+        "email":$("#email").val(),
+        "age":$("#age").val(),
+        "phone":$("#phone").val(),
+        "unitNo":$("#unitNo").val(),
+        "streetNo":$("#streetNo").val(),
+        "streetName":$("#streetName").val(),
+        "city":$("#city").val(),
+        "postalCode":$("#postalCode").val(),
+        "province":$("#province").val(),
+        "username":$("#username").val(),
+        "password":$("#password").val(),
+        "category":category,
+        "medicalCondition":medicalCondition
+    }
+    $.ajax({
+            url:"/signup_user",
+            type:"POST",
+            data: JSON.stringify(json_data),
+            dataType: "json",
+            contentType: "application/json"
+        }).done(function (data){
+            window.location.replace("login");
+        })
 }
-if(category == "Volunteer" && medicalCondition == "Yes"){
-    alert("Sorry we cannot let you volunteer with medical conditions");
-    return false;
-}
-json_data = {
-"name":$("#name").val(),
-"email":$("#email").val(),
-"age":$("#age").val(),
-"phone":$("#phone").val(),
-"unitNo":$("#unitNo").val(),
-"streetNo":$("#streetNo").val(),
-"streetName":$("#streetName").val(),
-"city":$("#city").val(),
-"postalCode":$("#postalCode").val(),
-"province":$("#province").val(),
-"username":$("#username").val(),
-"password":$("#password").val(),
-"category":category,
-"medicalCondition":medicalCondition,
-"password":$("#password").val()
-}
-$.ajax({
-    url:"/signup_user",
-    type:"POST",
-    data: JSON.stringify(json_data),
-    dataType: "json",
-    contentType: "application/json"
-    }).done(function (data){
-    window.location.replace("login");
-    })
-}
+
+
+$('#login_user').click(function(e){
+
+    json_data = {
+
+        "username":$("#username").val(),
+        "password":$("#password").val()
+    }
+    $.ajax({
+            url:"/login_user",
+            type:"POST",
+            data: JSON.stringify(json_data),
+            dataType: "json",
+            contentType: "application/json"
+        }).done(function (data){
+            if(data != ''){
+            window.location.replace("requests");
+            }
+        })
+});

@@ -1,16 +1,93 @@
 from app import utils
-import flask
+from app import login_manager
+from flask import request, redirect, url_for, Blueprint
+import flask_login
 import os
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 
-AUTH = flask.Blueprint(f"API_{os.environ.get('VERSION')}_USER_OPS", __name__)
+AUTH = Blueprint(f"API_{os.environ.get('VERSION')}_USER_OPS", __name__)
 
 
-@AUTH.route("/login", methods=["POST"])
+class User:
+    pass
+
+
+@login_manager.user_loader
+def user_loader(username):
+    """
+    Userloader function for flask_login
+
+    Arugments:
+        username str
+            Username of the user
+    """
+    user = User()
+    user.id = username
+    return user
+
+
+# @login_manager.request_loader
+# def request_loader(request):
+#     """
+#     Request loader function to help flask_login
+#
+#     request: application/json
+#         username str
+#             Username of the string
+#         password str
+#             Password of the user
+#     """
+#     data = request.get_json()
+#     username = data['username']
+#
+#     _, cursor = utils.get_database_connection()
+#     query = (
+#         f"SELECT username, password FROM login_details WHERE username={data['username']}"
+#     )
+#     cursor.execute(query)
+#     username, password = cursor.fetchone()
+#
+#     user = User()
+#     user.id = username
+#     user.is_authenticated = (generate_password_hash(data['password']) == password)
+#     return user
+
+
+@AUTH.route("/login_user", methods=["POST"])
 def login():
-    data = flask.request.get_json()
-    return data
+    """
+    Login the user
+
+    Request: application/json
+        username str
+            Username of the user
+        password str
+            Password of the user
+    """
+    data = request.get_json()
+
+    _, cursor = utils.get_database_connection()
+    query = f"SELECT username, password FROM login_details WHERE username='{data['username']}'"
+    cursor.execute(query)
+    username, password = cursor.fetchone()
+    if username == None:
+        return utils.make_response("{error: User does not exist}", 404)
+
+    if generate_password_hash(data["password"]) == password:
+        user = User()
+        user.id = username
+        flask_login.login_user(user)
+    return utils.make_response("{error: None}", 200)
+
+
+@AUTH.route("/logout")
+def logout():
+    """
+    Logout the user.
+    """
+    flask_login.logout_user()
+    return redirect(url_for("pages.login_page"))
 
 
 @AUTH.route("/signup_user", methods=["POST"])
@@ -46,7 +123,7 @@ def signup():
         medicalCondition boolean
             If the user has any medical condition.
     """
-    data = flask.request.get_json()
+    data = request.get_json()
     conn, cursor = utils.get_database_connection()
     timestamp = utils.get_utc_timestamp_now()
 
@@ -91,11 +168,11 @@ def signup():
             message = f"{{error: Email {data['email']} is already in the system}}"
             return utils.make_response(message, 409)
     else:
-        medical_condition = True if data['medicalCondition'] == "Yes" else False
+        medical_condition = True if data["medicalCondition"] == "Yes" else False
         query = (
-            "INSERT INTO requester_details (requester_name, requester_email, requester_phone, age,"
-            f"has_medical_condition, login_id, created_at, updated_at) VALUES ({data['name']}, "
-            f"{data['email']}, {data['phone']}, {data['id']}, {medical_condition}, "
+            "INSERT INTO requester_details (requester_name, requester_email, requester_phone, requester_age,"
+            f"has_medical_condition, login_id, created_at, updated_at) VALUES ('{data['name']}', "
+            f"'{data['email']}', '{data['phone']}', {data['age']}, {medical_condition}, "
             f"{login_id}, '{timestamp}', '{timestamp}')"
         )
         try:
