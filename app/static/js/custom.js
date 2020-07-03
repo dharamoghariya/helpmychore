@@ -20,8 +20,8 @@ function request_submit(){
             data: JSON.stringify(json_data),
             dataType: "json",
             contentType: "application/json"
-        }).done(function (data){
-            if(data == 200){
+        }).done(function (data, status_code){
+            if(status_code == "success"){
             $('#request-success-alert').removeClass('hide');
             }else{
             $('#request-error-alert').removeClass('hide');

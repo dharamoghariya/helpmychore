@@ -29,7 +29,7 @@ def submit_request():
     conn, cursor = utils.get_database_connection()
 
     timestamp = utils.get_utc_timestamp_now()
-    requester_id = 2
+    requester_id = 37
     request_query = (
         "INSERT INTO request_details (request_date, request_type, request_information, "
         "request_note, requester_id, volunteer_id, is_cancelled, is_commenced, "
@@ -73,7 +73,7 @@ def get_requests():
         volunteer_id int
             Volunteer ID for whom the matching requests are to be found.
     """
-    volunteer_id = 3
+    volunteer_id = 5
     _, cursor = utils.get_database_connection()
 
     volunteer_postal_query = (
